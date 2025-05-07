@@ -2,7 +2,12 @@ const express = require('express');
 const { BigQuery } = require('@google-cloud/bigquery');
 const router = express.Router();
 
-const bigquery = new BigQuery();
+const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS);
+
+const bigquery = new BigQuery({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  credentials: credentials,
+});
 
 router.get('/', async (req, res) => {
   const query = `
