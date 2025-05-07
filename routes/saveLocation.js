@@ -23,16 +23,30 @@ router.post('/', async (req, res) => {
     calendar_date
   }];
 
+  console.log("Payload to BigQuery:", rows);
+
   try {
     await bigquery
       .dataset(process.env.BQ_DATASET_ID)
       .table(process.env.BQ_LOC_ID)
-      .insert(rows);
+      .insert([rows]);
 
+    console.log("Insert success");
     res.status(200).json({ message: "Location inserted into BigQuery!" });
   } catch (err) {
-    console.error('BigQuery insert error:', err);
-    res.status(500).json({ message: "Failed to insert into BigQuery", error: err });
+    console.error('BigQuery insert error:', JSON.stringify(err, null, 2));
+    // Extra detailed logging if it's a PartialFailureError
+    if (err.name === 'PartialFailureError' && err.errors) {
+      err.errors.forEach((insertError, index) => {
+        console.error(`Row ${index} insert error:`, insertError.errors);
+      });
+    }
+
+    res.status(500).json({
+      message: "Failed to insert into BigQuery",
+      error: err.message,
+      details: err.errors || null
+    });
   }
 });
 
