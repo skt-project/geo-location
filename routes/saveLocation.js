@@ -10,7 +10,7 @@ const bigquery = new BigQuery({
 });
 
 router.post('/', async (req, res) => {
-  const { storeId, storeName, distributor, region, spv, longitude, latitude, date } = req.body;
+  const { storeId, storeName, distributor, region, spv, longitude, latitude, calendar_date } = req.body;
 
   const rows = [{
     store_id: storeId,
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     spv,
     longitude,
     latitude,
-    date
+    calendar_date
   }];
 
   try {
