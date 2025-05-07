@@ -1,25 +1,39 @@
-const { Router } = require('express');
-const { existsSync, readFileSync, writeFileSync } = require('fs');
+const express = require('express');
+const { BigQuery } = require('@google-cloud/bigquery');
+const router = express.Router();
 
-const router = Router();
+const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
-router.post('/saveLocation', (req, res) => {
-  const { lat, lng } = req.body;
+const bigquery = new BigQuery({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  credentials: credentials,
+});
 
-  const filePath = './data/locations.json';
+router.post('/', async (req, res) => {
+  const { latitude, longitude, date, spv, region, distributor, storeId, storeName } = req.body;
 
-  if (!existsSync(filePath)) {
-    writeFileSync(filePath, JSON.stringify([]));
+  const rows = [{
+    latitude,
+    longitude,
+    date,
+    spv,
+    region,
+    distributor,
+    store_id: storeId,
+    store_name: storeName
+  }];
+
+  try {
+    await bigquery
+      .dataset(process.env.BQ_LOC_ID)
+      .table('location_logs')
+      .insert(rows);
+
+    res.status(200).json({ message: "Location inserted into BigQuery!" });
+  } catch (err) {
+    console.error('BigQuery insert error:', err);
+    res.status(500).json({ message: "Failed to insert into BigQuery", error: err });
   }
-
-  const locationsData = JSON.parse(readFileSync(filePath, 'utf-8'));
-
-  const newLocation = { lat, lng };
-  locationsData.push(newLocation);
-
-  writeFileSync(filePath, JSON.stringify(locationsData, null, 2));
-
-  res.json({ success: true });
 });
 
 module.exports = router;
