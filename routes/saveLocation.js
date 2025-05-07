@@ -25,8 +25,8 @@ router.post('/', async (req, res) => {
 
   try {
     await bigquery
-      .dataset(process.env.BQ_LOC_ID)
-      .table('location_logs')
+      .dataset(process.env.BQ_DATASET_ID)
+      .table(process.env.BQ_LOC_ID)
       .insert(rows);
 
     res.status(200).json({ message: "Location inserted into BigQuery!" });

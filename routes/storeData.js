@@ -12,7 +12,7 @@ const bigquery = new BigQuery({
 router.get('/', async (req, res) => {
   const query = `
     SELECT upper(spv) as spv, upper(region) as region, upper(distributor) as distributor, cust_id AS store_id, store_name
-    FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_STORE_DB_ID}.${process.env.BQ_TABLE_ID}\`
+    FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_STORE_DB_ID}\`
     WHERE spv IS NOT NULL OR spv = ""
   `;
 
