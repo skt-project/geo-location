@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
     FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_STORE_DB_ID}\`
     WHERE spv <> ''
     AND cust_id NOT IN (
-      SELECT cust_id
+      SELECT store_id
       FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_LOC_ID}\`
     )
   `;
