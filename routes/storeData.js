@@ -18,6 +18,10 @@ router.get('/', async (req, res) => {
       SELECT store_id
       FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_LOC_ID}\`
     )
+    AND cust_id NOT IN (
+      SELECT customer_id
+      FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_CORRECTION_ID}\`
+    )
   `;
 
   try {
