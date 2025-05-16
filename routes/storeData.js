@@ -14,6 +14,10 @@ router.get('/', async (req, res) => {
     SELECT upper(distributor_se) as salesman, upper(spv) as spv, upper(region) as region, upper(distributor) as distributor, cust_id AS store_id, store_name
     FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_STORE_DB_ID}\`
     WHERE spv <> ''
+    AND longitude <> ''
+    AND longitude IS NOT NULL
+    AND latitude <> ''
+    AND latitude IS NOT NULL
     AND cust_id NOT IN (
       SELECT store_id
       FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_LOC_ID}\`
