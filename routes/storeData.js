@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
     SELECT upper(spv) as spv, upper(region) as region, upper(distributor) as distributor, cust_id AS store_id, store_name
     FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_STORE_DB_ID}\`
     WHERE spv <> ''
+    AND spv <> '-'
     AND longitude = ''
     AND latitude = ''
     AND cust_id NOT IN (
@@ -24,6 +25,7 @@ router.get('/', async (req, res) => {
       SELECT customer_id
       FROM \`${process.env.GOOGLE_PROJECT_ID}.${process.env.BQ_DATASET_ID}.${process.env.BQ_CORRECTION_ID}\`
     )
+    AND customer_status <> 'Closed'
   `;
 
   try {
